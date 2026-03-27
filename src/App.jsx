@@ -1,8 +1,45 @@
+import {
+  createBrowserRouter,
+  RouterProvider,
+} from "react-router-dom";
+import Home from "./ui/Home";
+import Menu from "./features/menu/Menu";
+import Cart from "./features/cart/Cart";
+import CreateOrder from "./features/order/CreateOrder";
+import Order from "./features/order/Order";
+import AppLayout from "./ui/AppLayout";
+
+let router = createBrowserRouter([
+  {
+    Component: AppLayout,
+    children: [
+      {
+        path: "/",
+        Component: Home,
+      },
+      {
+        path: "/menu",
+        Component: Menu,
+      },
+      {
+        path: "/cart",
+        Component: Cart
+      },
+      {
+        path: "/order/new",
+        Component: CreateOrder
+      },
+      {
+        path: "/order/:orderId",
+        Component: Order
+      },
+    ]
+  }
+]);
+
 function App() {
   return (
-    <>
-      Hello vite!
-    </>
+    <RouterProvider router={router}></RouterProvider>
   )
 }
 
