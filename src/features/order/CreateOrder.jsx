@@ -34,11 +34,11 @@ const fakeCart = [
 function CreateOrder() {
   // const [withPriority, setWithPriority] = useState(false);
   const cart = fakeCart;
-  const navigation = useNavigation()
-  const isSubmitting = navigation.state === "submitting"
+  const navigation = useNavigation();
+  const isSubmitting = navigation.state === "submitting";
 
   // To get errors from action hook
-  const formErrors = useActionData()
+  const formErrors = useActionData();
 
   return (
     <div>
@@ -56,18 +56,24 @@ function CreateOrder() {
           <div>
             <input type="tel" name="phone" required />
           </div>
-          {formErrors?.phone && <p>{ formErrors.phone }</p> }
+          {formErrors?.phone && <p>{formErrors.phone}</p>}
         </div>
 
         <div>
           <label>Address</label>
           <div>
-            <input type="text" name="address" required />
+            <input
+              className="w-full rounded-full border border-stone-200 px-4 py-2 text-sm transition-all duration-300 placeholder:text-stone-400 focus:ring focus:ring-yellow-400 focus:outline-none md:px-6 md:py-3"
+              type="text"
+              name="address"
+              required
+            />
           </div>
         </div>
 
         <div>
           <input
+            className="h-6 w-6 accent-yellow-400 focus:ring focus:ring-yellow-400 focus:ring-offset-2 focus:outline-none"
             type="checkbox"
             name="priority"
             id="priority"
@@ -79,7 +85,12 @@ function CreateOrder() {
 
         <div>
           <input type="hidden" name="cart" value={JSON.stringify(cart)} />
-          <button disabled={isSubmitting}>{ isSubmitting ? "Placing order..." : "Order now" }</button>
+          <button
+            className="inline-block rounded-full bg-yellow-400 px-4 py-3 font-semibold tracking-wide text-stone-800 uppercase transition-colors duration-300 hover:bg-yellow-300 focus:bg-yellow-300 focus:ring focus:ring-yellow-300 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Placing order..." : "Order now"}
+          </button>
         </div>
       </Form>
     </div>
@@ -88,24 +99,26 @@ function CreateOrder() {
 
 // eslint-disable-next-line react-refresh/only-export-components
 export async function action({ request }) {
-  const formData = await request.formData()
-  const data = Object.fromEntries(formData)
+  const formData = await request.formData();
+  const data = Object.fromEntries(formData);
 
   const order = {
     ...data,
     cart: JSON.parse(data.cart),
-    priority: data.priority === "on"
-  }
+    priority: data.priority === "on",
+  };
 
-  console.log(order)
+  console.log(order);
 
-  const errors = {}
+  const errors = {};
 
-  if (!isValidPhone(order.phone)) errors.phone = "Please give us your correct phone number. We might need it to contact you";
+  if (!isValidPhone(order.phone))
+    errors.phone =
+      "Please give us your correct phone number. We might need it to contact you";
 
-  if (Object.keys(errors).length > 0) return errors
+  if (Object.keys(errors).length > 0) return errors;
 
-  const newOrder = await createOrder(order)
+  const newOrder = await createOrder(order);
 
   // Cant use useNavigate, since hooks cant be created inside functions, only inside components
   return redirect(`/order/${newOrder.id}`);
